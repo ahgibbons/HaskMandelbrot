@@ -1,0 +1,6 @@
+*.bmp
+*.png
+.stack-work/
+.stack-work/*
+spiral/
+zoom/
