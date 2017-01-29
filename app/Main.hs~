@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+
 module Main where
 
 import Lib
@@ -9,8 +11,14 @@ import Data.Array.Repa hiding ((++))
 import Data.Array.Repa.IO.Matrix
 import Data.Array.Repa.IO.BMP
 import Data.Word
+import System.Console.CmdArgs
 import System.Environment (getArgs)
 
+data Options = Options { centrePos :: Complex Double
+                       , imSize :: Double
+                       , imResolution :: Int
+                       , iterations :: Int
+                       , zoomRepeats :: Int}
 
 mandelbrotZoom :: String -> Complex Double -> Double -> Int -> Int -> Int -> Int -> IO ()
 mandelbrotZoom _ _ _ _ _ 0 _ = return ()
@@ -25,11 +33,11 @@ mandelbrotZoom filebase centre size res n t maxt = do
 mainSingle :: IO ()
 mainSingle = do
   [i',j',size',res',n',filename] <- getArgs
-  let res = read res' :: Int
-      n = read n' :: Int
-      size = read size' :: Double
-      i = read i' :: Double
-      j = read j' :: Double
+  let res = read res'      :: Int
+      n = read n'          :: Int
+      size = read size'    :: Double
+      i = read i'          :: Double
+      j = read j'          :: Double
       centre = i :+ j
       cs' = genMandelbrot res n size centre
   cs <- computeP cs' :: IO (Array U DIM2 (Word8,Word8,Word8))
@@ -48,5 +56,26 @@ mainZoom = do
       centre = i :+ j
   mandelbrotZoom filebase centre size res n t t
 
+data Sample = Sample {hello :: String}
+            deriving (Show,Data,Typeable)
+
+data InOpts = InOpts { i :: Int
+                     , j :: Int
+                     , res :: Int
+                     , width :: Double
+                     , iters :: Int
+                     , zooms :: Int}
+
+            deriving (Show,Data,Typeable)
+
+inopts = InOpts{ i = def
+               , j = def
+               , res = def
+               , width = def
+               , iters = def
+               , zooms = def}
+
+sample = Sample{hello = def}
+
 main :: IO ()
-main = mainZoom
+main = print =<< cmdArgs $ inopts 0 0 100 4 100 1
