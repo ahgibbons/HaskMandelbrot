@@ -20,6 +20,7 @@ library
   build-depends:       base >= 4.7 && < 5
                      , repa
                      , repa-io
+                     , cmdargs
   default-language:    Haskell2010
 
 executable Fractal-exe
@@ -30,6 +31,7 @@ executable Fractal-exe
                      , Fractal
                      , repa
                      , repa-io
+                     , cmdargs
   default-language:    Haskell2010
 
 test-suite Fractal-test
